@@ -21,19 +21,21 @@ async function generateIcons(options) {
   const { onlyStaged } = options;
   ensurePaths(options);
 
-  let icons = onlyStaged
-    ? await getStagedIcons(options)
-    : getIconFromFolder(options);
+  const iconsInFolder = getIconFromFolder(options);
 
-  if (!icons.length) {
+  let iconsToProcess = onlyStaged
+    ? await getStagedIcons(options)
+    : iconsInFolder;
+
+  if (!iconsToProcess.length) {
     console.log("No icons found");
   }
 
-  for (icon of icons) {
+  for (icon of iconsToProcess) {
     const path = await generateComponent(icon, options);
   }
 
-  createIndexFile(icons, options);
+  createIndexFile(iconsInFolder, options);
 
   process.exit(0);
 }
