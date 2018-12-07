@@ -1,0 +1,28 @@
+{
+  "name": "svg",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=9"
+  },
+  "bin": {
+    "svg-generate": "src/index.js"
+  },
+  "scripts": {
+    "svg-generate": "node src/index.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-syntax-jsx": "^7.2.0",
+    "@svgr/babel-plugin-remove-jsx-attribute": "^4.0.3",
+    "@svgr/core": "^4.1.0",
+    "@svgr/plugin-jsx": "^4.1.0",
+    "@svgr/plugin-prettier": "^4.0.3",
+    "@svgr/plugin-svgo": "^4.0.3",
+    "lodash.camelcase": "^4.3.0"
+  },
+  "devDependencies": {
+    "minimist": "^1.2.0"
+  }
+}
