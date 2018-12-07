@@ -100,7 +100,7 @@ function createIndexFile(icons, options) {
   for (icon of icons) {
     name = getComponentNameFromFileName(icon);
 
-    content += `export {default as ${name}} from './${name}.${suffix}'\n`;
+    content += `export { default as ${name} } from './${name}.${suffix}';\n`;
   }
 
   fs.writeFileSync(`${exportPath}/index.tsx`, content);
