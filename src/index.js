@@ -12,8 +12,8 @@ const {
   createIndexFile
 } = require("./utils");
 
-const DEFAULT_ICON_PATH = "./icons";
-const DEFAULT_EXPORT_PATH = "./components/icon";
+const DEFAULT_ICON_PATH = null;
+const DEFAULT_EXPORT_PATH = null;
 const DEFAULT_SUFFIX = "react";
 const DEFAULT_EXTENSION = "tsx";
 
@@ -48,8 +48,8 @@ const argv = minimist(process.argv.slice(2), {
   }
 });
 
-function normalizePath(path) {
-  return path.replace(/^~/, os.homedir());
+function normalizePath(userPath) {
+  return path.resolve(userPath.replace(/^~/, os.homedir()));
 }
 
 generateIcons({

@@ -10,7 +10,6 @@ function ensurePaths(options) {
   const { exportPath, iconPath } = options;
   let valid = true;
 
-  console.log(exportPath);
   if (!fs.existsSync(exportPath)) {
     console.log("EXPORT_PATH doesn't exists!");
     valid = false;
@@ -29,7 +28,7 @@ function ensurePaths(options) {
 function getComponentNameFromFileName(file) {
   const name = file.split(".")[0];
 
-  let camelSized = camelcase(name);
+  const camelSized = camelcase(name);
 
   // create ComponentName, first letter should be uppercased
   return camelSized.charAt(0).toUpperCase() + camelSized.slice(1);
@@ -107,10 +106,14 @@ function createIndexFile(icons, options) {
   fs.writeFileSync(`${exportPath}/index.tsx`, content);
 }
 
+function isSvg(fileName) {
+  return path.extname(fileName) === ".svg";
+}
+
 function getIconFromFolder(options) {
   const { iconPath } = options;
 
-  return fs.readdirSync(iconPath);
+  return fs.readdirSync(iconPath).filter(isSvg);
 }
 
 async function getStagedIcons(options) {
@@ -126,8 +129,9 @@ async function getStagedIcons(options) {
 
       const files = stdout
         .split("\n")
-        .map(a => `./${a.trim()}`)
-        .filter(p => p.indexOf(iconPath) !== -1)
+        .filter(
+          p => path.resolve(p.trim()).indexOf(iconPath) !== -1 && isSvg(p)
+        )
         .map(p => path.basename(p));
 
       res(files);

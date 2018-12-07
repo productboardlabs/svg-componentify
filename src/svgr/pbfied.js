@@ -1,14 +1,14 @@
 const { transform } = require("@babel/core");
-const pbfied = require("../babel/pbfied");
+const pbfiedBabelPlugin = require("../babel/pbfied");
 
-function jsxPlugin(code, config, state) {
+function pbfiedSVGRPlugin(code, config, state) {
   const { componentName: name } = state;
 
   const { code: generatedCode } = transform(code, {
-    plugins: ["@babel/syntax-jsx", pbfied]
+    plugins: ["@babel/syntax-jsx", pbfiedBabelPlugin]
   });
 
   return generatedCode;
 }
 
-module.exports = jsxPlugin;
+module.exports = pbfiedSVGRPlugin;
