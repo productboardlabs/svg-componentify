@@ -1,5 +1,5 @@
 {
-  "name": "svg",
+  "name": "svg-componentify",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,10 +7,10 @@
     "node": ">=9"
   },
   "bin": {
-    "svg-generate": "src/index.js"
+    "svg-componentify": "src/index.js"
   },
   "scripts": {
-    "svg-generate": "node src/index.js"
+    "svg-componentify": "node src/index.js"
   },
   "dependencies": {
     "@babel/core": "^7.2.0",
