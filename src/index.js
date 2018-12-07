@@ -6,7 +6,7 @@ const path = require("path");
 const minimist = require("minimist");
 const {
   ensurePaths,
-  getIconFromFolder,
+  getIconsFromFolder,
   getStagedIcons,
   generateComponent,
   createIndexFile
@@ -21,7 +21,7 @@ async function generateIcons(options) {
   const { onlyStaged } = options;
   ensurePaths(options);
 
-  const iconsInFolder = getIconFromFolder(options);
+  const iconsInFolder = getIconsFromFolder(options);
 
   let iconsToProcess = onlyStaged
     ? await getStagedIcons(options)

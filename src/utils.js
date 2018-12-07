@@ -110,7 +110,7 @@ function isSvg(fileName) {
   return path.extname(fileName) === ".svg";
 }
 
-function getIconFromFolder(options) {
+function getIconsFromFolder(options) {
   const { iconPath } = options;
 
   return fs.readdirSync(iconPath).filter(isSvg);
@@ -141,7 +141,7 @@ async function getStagedIcons(options) {
 
 module.exports = {
   ensurePaths,
-  getIconFromFolder,
+  getIconsFromFolder,
   getStagedIcons,
   generateComponent,
   createIndexFile
