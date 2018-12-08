@@ -58,11 +58,12 @@ export default Feature;
 
 Exported binary `svg-componentify` has this possible configuration (via arguments)
 
-`--icon-path` (required) Where to look for SVG icons
-`--export-path` (required) Where to export optimized icon React components
-`--extension` (defaults to `react`)
-`--suffix` (defaults to `tsx`)
-`--only-staged` (defaults to `false`) Transform only staged svg icons files
+- `--icon-path` (required) Where to look for SVG icons
+- `--export-path` (required) Where to export optimized icon React components
+- `--extension` (defaults to `react`)
+- `--suffix` (defaults to `tsx`)
+- `--only-staged` (defaults to `false`) Transform only staged svg icons files
+- `-v`, `--version` to print actual version of the tool
 
 ## Example
 
