@@ -6,17 +6,37 @@ const camelcase = require("lodash.camelcase");
 const svgr = require("@svgr/core").default;
 const pbfied = require("./svgr/pbfied");
 
+const LOG_NEWLINE = 0;
+const LOG_SAME_LINE = 1;
+const LOG_REWRITE = 2;
+
+function log(message, type = LOG_NEWLINE) {
+  let modifier = "";
+  switch (type) {
+    case LOG_NEWLINE:
+      modifier = "\n";
+      break;
+    case LOG_SAME_LINE:
+      modifier = "";
+      break;
+    case LOG_REWRITE:
+      modifier = "\033[0G";
+      break;
+  }
+  process.stdout.write(`${message}${modifier}`);
+}
+
 function ensurePaths(options) {
   const { exportPath, iconPath } = options;
   let valid = true;
 
   if (!fs.existsSync(exportPath)) {
-    console.log("EXPORT_PATH doesn't exists!");
+    log("EXPORT_PATH doesn't exists!");
     valid = false;
   }
 
   if (!fs.existsSync(iconPath)) {
-    console.log("ICON_PATH doesn't exists!");
+    log("ICON_PATH doesn't exists!");
     valid = false;
   }
 
@@ -31,16 +51,14 @@ async function prompt(question, { answer, correct, fallback }) {
     const rl = readline.createInterface(process.stdin, process.stdout);
     rl.question(question, function(userInput) {
       if (userInput === answer) {
-        console.log(correct);
+        if (correct) log(correct, LOG_SAME_LINE);
         rl.close();
         return res(true);
       }
 
-      if (fallback) {
-        console.log(fallback);
-      }
+      if (fallback) log(fallback, LOG_SAME_LINE);
       rl.close();
-      res(false);
+      return res(false);
     });
   });
 }
@@ -73,7 +91,7 @@ async function getComponentCode(svgCode, name) {
 
 async function generateComponent(iconName, options) {
   const { suffix, extension, exportPath, iconPath } = options;
-  console.log(`Processing "${iconName}"...`);
+  log(`Processing "${iconName}"...`);
 
   const componentName = getComponentNameFromFileName(iconName);
   const componentPath = `${exportPath}/${componentName}.${suffix}.${extension}`;
@@ -81,16 +99,25 @@ async function generateComponent(iconName, options) {
 
   // check if the import path exists, if not the file has been removed (from git history) so we want to delete it
   if (!fs.existsSync(svgPath)) {
+    // if the component doesn't exit let's do nothing (in case the script si run more than once
+    if (!fs.existsSync(componentPath)) {
+      log(
+        "Associated component hasn't been found! It might be already deleted."
+      );
+      return;
+    }
+
     const shouldPersist = await prompt(
-      "This SVG file has been removed, do you want to remove it completely? n/[y]: ",
+      "This SVG file has been removed, do you want to remove it completely? n/[y]:",
       {
         answer: "n",
-        correct: `Skipped. Component "${componentName}" is persisted.`,
+        correct: null,
         fallback: "Removing..."
       }
     );
 
     if (shouldPersist) {
+      log(`Skipped. Component "${componentName}" is persisted.`);
       // do nothing
       return;
     }
@@ -98,10 +125,10 @@ async function generateComponent(iconName, options) {
     // otherwise, try to remove the file
     try {
       fs.unlinkSync(componentPath);
-      console.log("File has been deleted!");
+      log("File has been deleted!");
     } catch (e) {
-      console.log(
-        "Error in removing the file :(. The file might be still persisted."
+      throw new Error(
+        `Something went wrong during deleting "${componentPath}"! The file might be still there.`
       );
     }
 
@@ -120,18 +147,18 @@ async function generateComponent(iconName, options) {
   }
 
   if (!shouldWrite) {
-    console.log(`Skipped! Component "${componentName}" is untouched.`);
+    log(`Skipped! Component "${componentName}" is untouched.`);
     return;
   }
 
-  console.log(`Generating ${iconName}...`);
+  log(`Generating ${iconName}...`, LOG_SAME_LINE);
   const svgFile = fs.readFileSync(svgPath);
   const svgCode = svgFile.toString();
   const componentCode = await getComponentCode(svgCode, componentName);
 
   fs.writeFileSync(componentPath, componentCode);
 
-  console.log(`Component "${componentName}" has been generated!`);
+  log(`Component "${componentName}" has been generated!`);
   return componentPath;
 }
 
@@ -165,7 +192,7 @@ async function getStagedIcons(options) {
     exec("git diff --staged --name-only", (stdin, stdout, stderr) => {
       if (stderr) {
         throw new Error(
-          "`git diff` failed, are you in repository? Do you have git binary in PATH?"
+          "`git diff` failed, are you in the repository? Do you have git binary in PATH?"
         );
       }
 
@@ -182,6 +209,7 @@ async function getStagedIcons(options) {
 }
 
 module.exports = {
+  log,
   ensurePaths,
   getIconsFromFolder,
   getStagedIcons,

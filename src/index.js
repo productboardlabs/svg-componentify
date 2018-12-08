@@ -6,6 +6,7 @@ const path = require("path");
 const minimist = require("minimist");
 const pkg = require("../package.json");
 const {
+  log,
   ensurePaths,
   getIconsFromFolder,
   getStagedIcons,
@@ -29,7 +30,7 @@ async function generateIcons(options) {
     : iconsInFolder;
 
   if (!iconsToProcess.length) {
-    console.log("No icons to process has been found");
+    log("No icons to process has been found");
   }
 
   for (icon of iconsToProcess) {
@@ -59,7 +60,7 @@ function normalizePath(userPath) {
 }
 
 if (argv["version"]) {
-  console.log(pkg.version);
+  log(pkg.version);
   return;
 }
 
