@@ -25,6 +25,26 @@ function ensurePaths(options) {
   }
 }
 
+async function prompt(question, { answer, correct, fallback }) {
+  // ask user what to do
+  return await new Promise(res => {
+    const rl = readline.createInterface(process.stdin, process.stdout);
+    rl.question(question, function(userInput) {
+      if (userInput === answer) {
+        console.log(correct);
+        rl.close();
+        return res(true);
+      }
+
+      if (fallback) {
+        console.log(fallback);
+      }
+      rl.close();
+      res(false);
+    });
+  });
+}
+
 function getComponentNameFromFileName(file) {
   const name = file.split(".")[0];
 
@@ -53,44 +73,66 @@ async function getComponentCode(svgCode, name) {
 
 async function generateComponent(iconName, options) {
   const { suffix, extension, exportPath, iconPath } = options;
-  console.log(`Processing ${iconName}`);
-  let write = true;
+  console.log(`Processing "${iconName}"...`);
 
   const componentName = getComponentNameFromFileName(iconName);
+  const componentPath = `${exportPath}/${componentName}.${suffix}.${extension}`;
+  const svgPath = `${iconPath}/${iconName}`;
 
-  // check if file already exists
-  if (fs.existsSync(`${exportPath}/${componentName}.${suffix}.${extension}`)) {
-    const rl = readline.createInterface(process.stdin, process.stdout);
-    // ask user what to do
-    write = await new Promise(res =>
-      rl.question("Overwrite? [n]/y: ", function(answer) {
-        if (answer === "y") {
-          console.log("Rewriting...");
-          return res(true);
-        }
-
-        res(false);
-      })
+  // check if the import path exists, if not the file has been removed (from git history) so we want to delete it
+  if (!fs.existsSync(svgPath)) {
+    const shouldPersist = await prompt(
+      "This SVG file has been removed, do you want to remove it completely? n/[y]: ",
+      {
+        answer: "n",
+        correct: `Skipped. Component "${componentName}" is persisted.`,
+        fallback: "Removing..."
+      }
     );
-    rl.close();
-  }
 
-  if (!write) {
-    console.log(`Generating ${iconName} skipped!`);
+    if (shouldPersist) {
+      // do nothing
+      return;
+    }
+
+    // otherwise, try to remove the file
+    try {
+      fs.unlinkSync(componentPath);
+      console.log("File has been deleted!");
+    } catch (e) {
+      console.log(
+        "Error in removing the file :(. The file might be still persisted."
+      );
+    }
+
+    // and we don't want to proceed to generation of the SVG
     return;
   }
 
-  console.log(`Generating ${iconName}`);
+  let shouldWrite = true;
+  // check if the component file already exists
+  if (fs.existsSync(componentPath)) {
+    shouldWrite = await prompt("Overwrite? [n]/y:", {
+      answer: "y",
+      correct: "Rewriting...",
+      fallback: null
+    });
+  }
 
-  const file = fs.readFileSync(`${iconPath}/${iconName}`);
-  const svgCode = file.toString();
+  if (!shouldWrite) {
+    console.log(`Skipped! Component "${componentName}" is untouched.`);
+    return;
+  }
 
-  const componentDestinationPath = `${exportPath}/${componentName}.${suffix}.${extension}`;
+  console.log(`Generating ${iconName}...`);
+  const svgFile = fs.readFileSync(svgPath);
+  const svgCode = svgFile.toString();
   const componentCode = await getComponentCode(svgCode, componentName);
 
-  fs.writeFileSync(componentDestinationPath, componentCode);
+  fs.writeFileSync(componentPath, componentCode);
 
-  return componentDestinationPath;
+  console.log(`Component "${componentName}" has been generated!`);
+  return componentPath;
 }
 
 function createIndexFile(icons, options) {

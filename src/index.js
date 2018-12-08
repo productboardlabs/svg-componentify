@@ -4,6 +4,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const minimist = require("minimist");
+const pkg = require("../package.json");
 const {
   ensurePaths,
   getIconsFromFolder,
@@ -28,7 +29,7 @@ async function generateIcons(options) {
     : iconsInFolder;
 
   if (!iconsToProcess.length) {
-    console.log("No icons found");
+    console.log("No icons to process has been found");
   }
 
   for (icon of iconsToProcess) {
@@ -41,6 +42,9 @@ async function generateIcons(options) {
 }
 
 const argv = minimist(process.argv.slice(2), {
+  string: ["icon-path", "export-path", "extension", "suffix"],
+  boolean: ["version", "only-staged"],
+  alias: { v: "version" },
   default: {
     "only-staged": false,
     "icon-path": DEFAULT_ICON_PATH,
@@ -52,6 +56,11 @@ const argv = minimist(process.argv.slice(2), {
 
 function normalizePath(userPath) {
   return path.resolve(userPath.replace(/^~/, os.homedir()));
+}
+
+if (argv["version"]) {
+  console.log(pkg.version);
+  return;
 }
 
 generateIcons({
