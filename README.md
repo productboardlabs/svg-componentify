@@ -8,7 +8,7 @@
 
 This tool seamlessly automate the work you have to do when you want from SVG file create React Component. At as a plus you will get optimized SVG structure.
 
-From file like this
+From file like this:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -54,7 +54,7 @@ export default Feature;
 
 ## Configuration
 
-> ⚠️ Currently there is not option to configure the transformator (#1) but you can always do a Fork, right
+> ⚠️ Currently there is not option to configure the transformator ([#1](https://github.com/productboard/svg-componentify/issues/1)) but you can always do a Fork, right. 💪 If you want this happen write us to to the issue, we will prioritize it.
 
 Exported binary `svg-componentify` has this possible configuration (via arguments)
 
