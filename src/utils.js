@@ -10,6 +10,13 @@ const LOG_NEWLINE = 0;
 const LOG_SAME_LINE = 1;
 const LOG_REWRITE = 2;
 
+const FILE_BANNER = `/**
+ * Copyright (c) ${new Date().getFullYear()}-present, ProductBoard, Inc.
+ * All rights reserved.
+ */
+
+`;
+
 function log(message, type = LOG_NEWLINE) {
   let modifier = "";
   switch (type) {
@@ -85,7 +92,7 @@ async function getComponentCode(svgCode, name) {
         "@svgr/plugin-prettier"
       ]
     },
-    { componentName: name }
+    { componentName: name, fileBanner: FILE_BANNER }
   );
 }
 

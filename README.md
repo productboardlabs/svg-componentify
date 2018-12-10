@@ -39,17 +39,22 @@ From file like this:
 You will get React Component like this:
 
 ```js
+/**
+ * Copyright (c) 2018-present, ProductBoard, Inc.
+ * All rights reserved.
+ */
+
 import React from "react";
 import cx from "classnames";
 import styles from "./Icon.styles";
 
-const Feature = () => (
-  <svg viewBox="0 0 16 16" className={cx(styles.icon, "pb-icon")}>
+const strop = ({ className }: { className: string }) => (
+  <svg viewBox="0 0 16 16" className={cx(className, styles.icon, "pb-icon")}>
     <path d="M15 0c.6 0 1 .4 1 1v14c0 .6-.4 1-1 1H1c-.6 0-1-.4-1-1V1c0-.6.4-1 1-1h14zm-1 14V2H2v12h12zM4 7h8v2H4V7zm0-3h8v2H4V4zm0 6h4v2H4v-2z" />
   </svg>
 );
 
-export default Feature;
+export default strop;
 ```
 
 ## Configuration
