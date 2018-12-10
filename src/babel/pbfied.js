@@ -8,6 +8,26 @@ const pbfiedPlugin = ({ types: t }) => {
   return {
     name: "pbfiedPlugin",
     visitor: {
+      VariableDeclarator(path) {
+        const className = t.objectPattern([
+          t.objectProperty(
+            t.identifier("className"),
+            t.identifier("className"),
+            false,
+            true
+          )
+        ]);
+        className.typeAnnotation = t.typeAnnotation(
+          t.objectTypeAnnotation([
+            t.objectTypeProperty(
+              t.identifier("className"),
+              t.stringTypeAnnotation()
+            )
+          ])
+        );
+
+        path.node.init.params = [className];
+      },
       ImportDeclaration(path) {
         if (path.node.source.value === "react") {
           path.insertAfter([
@@ -41,6 +61,7 @@ const pbfiedPlugin = ({ types: t }) => {
               t.jSXIdentifier("className"),
               t.jSXExpressionContainer(
                 t.callExpression(t.identifier("cx"), [
+                  t.identifier("className"),
                   t.memberExpression(
                     t.identifier("styles"),
                     t.identifier("icon")
