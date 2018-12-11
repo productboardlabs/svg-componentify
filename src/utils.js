@@ -55,16 +55,31 @@ function ensurePaths(options) {
 async function prompt(question, { answer, correct, fallback }) {
   // ask user what to do
   return await new Promise(res => {
-    const rl = readline.createInterface(process.stdin, process.stdout);
+    const ttyStream = fs.createReadStream("/dev/tty");
+    const rl = readline.createInterface(
+      ttyStream,
+      process.stdout,
+      undefined,
+      // to avoid duplicates of answers
+      false
+    );
+
+    const close = () => {
+      ttyStream.close();
+      rl.close();
+    };
+
     rl.question(question, function(userInput) {
       if (userInput === answer) {
         if (correct) log(correct, LOG_SAME_LINE);
-        rl.close();
+
+        close();
         return res(true);
       }
 
       if (fallback) log(fallback, LOG_SAME_LINE);
-      rl.close();
+
+      close();
       return res(false);
     });
   });
@@ -97,7 +112,7 @@ async function getComponentCode(svgCode, name) {
 }
 
 async function generateComponent(iconName, options) {
-  const { suffix, extension, exportPath, iconPath } = options;
+  const { suffix, extension, force, exportPath, iconPath } = options;
   log(`Processing "${iconName}"...`);
 
   const componentName = getComponentNameFromFileName(iconName);
@@ -114,14 +129,16 @@ async function generateComponent(iconName, options) {
       return;
     }
 
-    const shouldPersist = await prompt(
-      "This SVG file has been removed, do you want to remove it completely? n/[y]:",
-      {
-        answer: "n",
-        correct: null,
-        fallback: "Removing..."
-      }
-    );
+    const shouldPersist = force
+      ? false
+      : await prompt(
+          "This SVG file has been removed, do you want to remove it completely? n/[y]:",
+          {
+            answer: "n",
+            correct: null,
+            fallback: "Removing..."
+          }
+        );
 
     if (shouldPersist) {
       log(`Skipped. Component "${componentName}" is persisted.`);
@@ -145,7 +162,7 @@ async function generateComponent(iconName, options) {
 
   let shouldWrite = true;
   // check if the component file already exists
-  if (fs.existsSync(componentPath)) {
+  if (fs.existsSync(componentPath) && !force) {
     shouldWrite = await prompt("Overwrite? [n]/y:", {
       answer: "y",
       correct: "Rewriting...",

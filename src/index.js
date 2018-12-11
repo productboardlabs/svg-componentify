@@ -44,8 +44,8 @@ async function generateIcons(options) {
 
 const argv = minimist(process.argv.slice(2), {
   string: ["icon-path", "export-path", "extension", "suffix"],
-  boolean: ["version", "only-staged"],
-  alias: { v: "version" },
+  boolean: ["version", "only-staged", "force"],
+  alias: { v: "version", f: "force" },
   default: {
     "only-staged": false,
     "icon-path": DEFAULT_ICON_PATH,
@@ -69,5 +69,6 @@ generateIcons({
   iconPath: normalizePath(argv["icon-path"]),
   exportPath: normalizePath(argv["export-path"]),
   extension: argv["extension"],
-  suffix: argv["suffix"]
+  suffix: argv["suffix"],
+  force: argv["force"]
 });

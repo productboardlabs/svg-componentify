@@ -69,6 +69,7 @@ Exported binary `svg-componentify` has this possible configuration (via argument
 - `--suffix` (defaults to `tsx`)
 - `--only-staged` (defaults to `false`) Transform only staged svg icons files
 - `-v`, `--version` to print actual version of the tool
+- `-f`, `--force` force all prompts to its default value
 
 ## Example
 
