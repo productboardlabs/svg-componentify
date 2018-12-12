@@ -188,7 +188,7 @@ async function generateComponent(iconName, options) {
 
 function createIndexFile(icons, options) {
   const { exportPath, suffix } = options;
-  let content = "";
+  let content = FILE_BANNER;
 
   for (icon of icons) {
     name = getComponentNameFromFileName(icon);
