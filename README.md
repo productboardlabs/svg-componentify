@@ -2,7 +2,7 @@
 
 ## Install
 
-`yarn add productboard/svg-componentify -D`
+`yarn add productboard-labs/svg-componentify -D`
 
 ## Idea
 
@@ -48,18 +48,18 @@ import React from "react";
 import cx from "classnames";
 import styles from "./Icon.styles";
 
-const strop = ({ className }: { className: string }) => (
+const Feature = ({ className }: { className: string }) => (
   <svg viewBox="0 0 16 16" className={cx(className, styles.icon, "pb-icon")}>
     <path d="M15 0c.6 0 1 .4 1 1v14c0 .6-.4 1-1 1H1c-.6 0-1-.4-1-1V1c0-.6.4-1 1-1h14zm-1 14V2H2v12h12zM4 7h8v2H4V7zm0-3h8v2H4V4zm0 6h4v2H4v-2z" />
   </svg>
 );
 
-export default strop;
+export default Feature;
 ```
 
 ## Configuration
 
-> ⚠️ Currently there is not option to configure the transformator ([#1](https://github.com/productboard/svg-componentify/issues/1)) but you can always do a Fork, right. 💪 If you want this happen write us to to the issue, we will prioritize it.
+> ⚠️ Currently there is not option to configure the transformator ([#1](https://github.com/productboard-labs/svg-componentify/issues/1)) but you can always do a Fork, right. 💪 If you want this happen write us to to the issue, we will prioritize it.
 
 Exported binary `svg-componentify` has this possible configuration (via arguments)
 
