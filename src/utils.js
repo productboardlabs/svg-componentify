@@ -3,6 +3,8 @@ const path = require("path");
 const readline = require("readline");
 const { exec } = require("child_process");
 const camelcase = require("lodash.camelcase");
+const snakecase = require("lodash.snakecase");
+const xor = require("lodash.xor");
 const svgr = require("@svgr/core").default;
 const pbfied = require("./svgr/pbfied");
 
@@ -92,6 +94,14 @@ function getComponentNameFromFileName(file) {
 
   // create ComponentName, first letter should be uppercased
   return camelSized.charAt(0).toUpperCase() + camelSized.slice(1);
+}
+
+function getSvgNameFromComponentFileName(file) {
+  const name = file.split(".")[0];
+
+  const pascalSized = snakecase(name);
+
+  return pascalSized;
 }
 
 async function getComponentCode(svgCode, name) {
@@ -203,6 +213,10 @@ function isSvg(fileName) {
   return path.extname(fileName) === ".svg";
 }
 
+function isComponent(fileName, extension) {
+  return path.extname(fileName) === `.${extension}`;
+}
+
 function getIconsFromFolder(options) {
   const { iconPath } = options;
 
@@ -232,11 +246,38 @@ async function getStagedIcons(options) {
   );
 }
 
+async function getXORIcons(options) {
+  const { iconPath, exportPath, suffix, extension } = options;
+
+  // get icons we have
+  const icons = fs
+    .readdirSync(iconPath)
+    .filter(isSvg)
+    .map(iconName => {
+      const componentName = getComponentNameFromFileName(iconName);
+      return `${componentName}.${suffix}.${extension}`;
+    });
+
+  // get generated icons we have
+  const components = fs
+    .readdirSync(exportPath)
+    .filter(
+      name => name !== `index.${extension}` && isComponent(name, extension)
+    );
+
+  // get difference to act
+  return xor(icons, components).map(componentName => {
+    const iconName = getSvgNameFromComponentFileName(componentName);
+    return `${iconName}.svg`;
+  });
+}
+
 module.exports = {
   log,
   ensurePaths,
   getIconsFromFolder,
   getStagedIcons,
+  getXORIcons,
   generateComponent,
   createIndexFile
 };

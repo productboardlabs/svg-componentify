@@ -10,6 +10,7 @@ const {
   ensurePaths,
   getIconsFromFolder,
   getStagedIcons,
+  getXORIcons,
   generateComponent,
   createIndexFile
 } = require("./utils");
@@ -20,14 +21,19 @@ const DEFAULT_SUFFIX = "react";
 const DEFAULT_EXTENSION = "tsx";
 
 async function generateIcons(options) {
-  const { onlyStaged } = options;
+  const { onlyStaged, all } = options;
   ensurePaths(options);
 
   const iconsInFolder = getIconsFromFolder(options);
 
-  let iconsToProcess = onlyStaged
-    ? await getStagedIcons(options)
-    : iconsInFolder;
+  let iconsToProcess;
+  if (all) {
+    iconsToProcess = iconsInFolder;
+  } else if (onlyStaged) {
+    iconsToProcess = await getStagedIcons(options);
+  } else {
+    iconsToProcess = await getXORIcons(options);
+  }
 
   if (!iconsToProcess.length) {
     log("No icons to process has been found");
@@ -66,6 +72,7 @@ if (argv["version"]) {
 
 generateIcons({
   onlyStaged: !!argv["only-staged"],
+  all: !!argv["all"],
   iconPath: normalizePath(argv["icon-path"]),
   exportPath: normalizePath(argv["export-path"]),
   extension: argv["extension"],
