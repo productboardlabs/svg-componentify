@@ -17,13 +17,15 @@ const pbfiedPlugin = ({ types: t }) => {
             true
           )
         ]);
+
+        const classNameTypeAnnotation = t.objectTypeProperty(
+          t.identifier("className"),
+          t.stringTypeAnnotation()
+        );
+        classNameTypeAnnotation.optional = true;
+
         className.typeAnnotation = t.typeAnnotation(
-          t.objectTypeAnnotation([
-            t.objectTypeProperty(
-              t.identifier("className"),
-              t.stringTypeAnnotation()
-            )
-          ])
+          t.objectTypeAnnotation([classNameTypeAnnotation])
         );
 
         path.node.init.params = [className];
