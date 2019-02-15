@@ -17,6 +17,10 @@ const FILE_BANNER = `/**
  * All rights reserved.
  */
 
+import * as React from 'react';
+
+export type IconComponent = React.SFC<{ className?: string }>;
+
 `;
 
 function log(message, type = LOG_NEWLINE) {
