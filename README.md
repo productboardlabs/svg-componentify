@@ -1,8 +1,8 @@
-# svg-componentify
+# @productboard/svg-componentify
 
 ## Install
 
-`yarn add productboard-labs/svg-componentify -D`
+`yarn add productboard/svg-componentify -D`
 
 ## Idea
 
@@ -85,7 +85,7 @@ Exported binary `svg-componentify` has this possible configuration (via argument
     }
   },
   "devDependencies": {
-    "svg-componentify": "productboard/svg-componentify"
+    "@productboard/svg-componentify": "2.0.1"
   }
 }
 ```

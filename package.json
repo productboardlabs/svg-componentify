@@ -1,5 +1,5 @@
 {
-  "name": "svg-componentify",
+  "name": "@productboard/svg-componentify",
   "version": "2.0.0",
   "main": "index.js",
   "license": "MIT",
