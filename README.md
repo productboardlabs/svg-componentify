@@ -2,7 +2,7 @@
 
 ## Install
 
-`yarn add productboard/svg-componentify -D`
+`yarn add @productboard/svg-componentify -D`
 
 ## Idea
 
