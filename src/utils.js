@@ -18,7 +18,9 @@ const FILE_BANNER = `/**
  */
 
 import * as React from 'react';
+`;
 
+const INDEX_EXTRA_CONTENT = `
 export type IconComponent = React.SFC<{ className?: string }>;
 
 `;
@@ -202,7 +204,7 @@ async function generateComponent(iconName, options) {
 
 function createIndexFile(icons, options) {
   const { exportPath, suffix } = options;
-  let content = FILE_BANNER;
+  let content = FILE_BANNER + INDEX_EXTRA_CONTENT;
 
   for (icon of icons) {
     name = getComponentNameFromFileName(icon);
