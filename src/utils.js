@@ -17,11 +17,9 @@ const FILE_BANNER = `/**
  * All rights reserved.
  */
 
-import * as React from 'react';
 `;
 
-const INDEX_EXTRA_CONTENT = `
-export type IconComponent = React.SFC<{ className?: string }>;
+const INDEX_EXTRA_CONTENT = `export type IconComponent = React.SFC<{ className?: string }>;
 
 `;
 
