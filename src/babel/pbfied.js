@@ -1,6 +1,6 @@
 const { parse, transform } = require("@babel/core");
 
-const PATH_REMOVE_ATTRS = ["id"];
+const PATH_REMOVE_ATTRS = ["id", "clipRule", "fillRule"];
 const SVG_REMOVE_ATTRS = ["width", "height"];
 const CLASS_NAME = `pb-icon`;
 
