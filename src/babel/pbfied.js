@@ -46,10 +46,10 @@ const pbfiedPlugin = ({ types: t }) => {
       },
       JSXElement(path) {
         if (path.node.openingElement.name.name === "defs") {
-          path.replaceWithMultiple(path.node.children.filter(t.isJSXElement));
+          path.replaceInline(path.node.children.filter(t.isJSXElement));
         }
 
-        if (path.node.openingElement.name.name === "use") {
+        if (t.isJSXIdentifier(path.node) && path.node.name.name === "use") {
           path.remove();
         }
       },
