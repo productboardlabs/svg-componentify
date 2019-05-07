@@ -5,6 +5,8 @@ const SVG_REMOVE_ATTRS = ["width", "height"];
 const CLASS_NAME = `pb-icon`;
 
 const pbfiedPlugin = ({ types: t }) => {
+  let countPath = 0;
+
   return {
     name: "pbfiedPlugin",
     visitor: {
@@ -39,6 +41,16 @@ const pbfiedPlugin = ({ types: t }) => {
         if (t.isJSXIdentifier(path.node) && path.node.name.name === "use") {
           path.remove();
         }
+
+        if (path.node.openingElement.name.name === "svg") {
+          path.traverse({
+            JSXOpeningElement(path) {
+              if (path.node.name.name === "path") {
+                countPath++;
+              }
+            }
+          });
+        }
       },
       JSXOpeningElement(path) {
         if (path.node.name.name === "svg") {
@@ -46,11 +58,12 @@ const pbfiedPlugin = ({ types: t }) => {
             ...path.node.attributes.filter(
               a => !SVG_REMOVE_ATTRS.includes(a.name.name)
             ),
+            t.jsxSpreadAttribute(t.identifier("props")),
             t.jsxAttribute(
               t.jSXIdentifier("className"),
               t.jSXExpressionContainer(
                 t.callExpression(t.identifier("cx"), [
-                  t.identifier("className"),
+                  t.identifier("props.className"),
                   t.memberExpression(
                     t.identifier("styles"),
                     t.identifier("icon")
@@ -63,9 +76,13 @@ const pbfiedPlugin = ({ types: t }) => {
         }
 
         if (path.node.name.name === "path") {
+          const removeAttrs = [...PATH_REMOVE_ATTRS];
+          if (countPath === 1) {
+            removeAttrs.push("fill");
+          }
           path.node.attributes = [
             ...path.node.attributes.filter(
-              a => !PATH_REMOVE_ATTRS.includes(a.name.name)
+              a => !removeAttrs.includes(a.name.name)
             )
           ];
         }
