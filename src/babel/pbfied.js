@@ -9,23 +9,10 @@ const pbfiedPlugin = ({ types: t }) => {
     name: "pbfiedPlugin",
     visitor: {
       VariableDeclarator(path) {
-        const className = t.objectPattern([
-          t.objectProperty(
-            t.identifier("className"),
-            t.identifier("className"),
-            false,
-            true
-          )
-        ]);
-
-        const classNameTypeAnnotation = t.objectTypeProperty(
-          t.identifier("className"),
-          t.stringTypeAnnotation()
-        );
-        classNameTypeAnnotation.optional = true;
+        const className = t.identifier("props");
 
         className.typeAnnotation = t.typeAnnotation(
-          t.objectTypeAnnotation([classNameTypeAnnotation])
+          t.genericTypeAnnotation(t.identifier("React.SVGProps<SVGSVGElement>"))
         );
 
         path.node.init.params = [className];
