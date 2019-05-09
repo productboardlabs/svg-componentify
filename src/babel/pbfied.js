@@ -34,14 +34,6 @@ const pbfiedPlugin = ({ types: t }) => {
         }
       },
       JSXElement(path) {
-        if (path.node.openingElement.name.name === "defs") {
-          path.replaceInline(path.node.children.filter(t.isJSXElement));
-        }
-
-        if (t.isJSXIdentifier(path.node) && path.node.name.name === "use") {
-          path.remove();
-        }
-
         if (path.node.openingElement.name.name === "svg") {
           path.traverse({
             JSXOpeningElement(path) {
@@ -50,6 +42,14 @@ const pbfiedPlugin = ({ types: t }) => {
               }
             }
           });
+        }
+
+        if (path.node.openingElement.name.name === "defs") {
+          path.replaceInline(path.node.children.filter(t.isJSXElement));
+        }
+
+        if (t.isJSXIdentifier(path.node) && path.node.name.name === "use") {
+          path.remove();
         }
       },
       JSXOpeningElement(path) {
