@@ -5,11 +5,20 @@ const SVG_REMOVE_ATTRS = ["width", "height"];
 const CLASS_NAME = `pb-icon`;
 
 const pbfiedPlugin = ({ types: t }) => {
-  let countPath = 0;
+  let countPath;
 
   return {
     name: "pbfiedPlugin",
     visitor: {
+      Program: {
+        // Hacky why how to "scope" the global state, there is probably way better way, don't hesitate to send a PR to fix it
+        enter() {
+          countPath = 0;
+        },
+        exit() {
+          countPath = 0;
+        }
+      },
       VariableDeclarator(path) {
         const className = t.identifier("props");
 
@@ -77,6 +86,8 @@ const pbfiedPlugin = ({ types: t }) => {
 
         if (path.node.name.name === "path") {
           const removeAttrs = [...PATH_REMOVE_ATTRS];
+
+          // in case we have just one path, let's remove *fill* property since we want to inherit it from css
           if (countPath === 1) {
             removeAttrs.push("fill");
           }
