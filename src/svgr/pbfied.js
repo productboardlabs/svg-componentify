@@ -5,7 +5,7 @@ function pbfiedSVGRPlugin(code, config, state) {
   const { componentName: name, fileBanner: banner } = state;
 
   const { code: generatedCode } = transform(code, {
-    plugins: ["@babel/syntax-jsx", pbfiedBabelPlugin]
+    plugins: ["@babel/syntax-jsx", [pbfiedBabelPlugin, { name }]]
   });
 
   return `${banner}${generatedCode}`;

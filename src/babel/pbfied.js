@@ -1,10 +1,14 @@
 const { parse, transform } = require("@babel/core");
 
-const PATH_REMOVE_ATTRS = ["id", "clipRule", "fillRule"];
+const REMOVE_ATTRS = ["clipRule", "fillRule"];
+// specific remove
+const PATH_REMOVE_ATTRS = [];
 const SVG_REMOVE_ATTRS = ["width", "height"];
+const USE_REMOVE_ATTRS = ["xlinkHref"];
+
 const CLASS_NAME = `pb-icon`;
 
-const pbfiedPlugin = ({ types: t }) => {
+const pbfiedPlugin = ({ types: t }, options) => {
   let countPath;
 
   return {
@@ -61,6 +65,26 @@ const pbfiedPlugin = ({ types: t }) => {
           path.remove();
         }
       },
+      JSXAttribute(path) {
+        // scope all IDs to name of the Icon
+        if (
+          path.node.name.name === "id" &&
+          t.isStringLiteral(path.node.value)
+        ) {
+          path.node.value.value = `${options.name}_${path.node.value.value}`;
+        }
+
+        // apply scoped IDs for url(#...)
+        if (
+          t.isStringLiteral(path.node.value) &&
+          /\(#[\w-]*\)/.test(path.node.value.value)
+        ) {
+          path.node.value.value = path.node.value.value.replace(
+            "#",
+            `#${options.name}_`
+          );
+        }
+      },
       JSXOpeningElement(path) {
         if (path.node.name.name === "svg") {
           path.node.attributes = [
@@ -84,6 +108,22 @@ const pbfiedPlugin = ({ types: t }) => {
           ];
         }
 
+        const removeAttrs = [...REMOVE_ATTRS];
+        path.node.attributes = [
+          ...path.node.attributes.filter(
+            a => t.isJSXAttribute(a) && !removeAttrs.includes(a.name.name)
+          )
+        ];
+
+        if (path.node.name.name === "use") {
+          const removeAttrs = [...USE_REMOVE_ATTRS];
+          path.node.attributes = [
+            ...path.node.attributes.filter(
+              a => !removeAttrs.includes(a.name.name)
+            )
+          ];
+        }
+
         if (path.node.name.name === "path") {
           const removeAttrs = [...PATH_REMOVE_ATTRS];
 
@@ -91,6 +131,7 @@ const pbfiedPlugin = ({ types: t }) => {
           if (countPath === 1) {
             removeAttrs.push("fill");
           }
+
           path.node.attributes = [
             ...path.node.attributes.filter(
               a => !removeAttrs.includes(a.name.name)
