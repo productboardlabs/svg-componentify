@@ -86,6 +86,13 @@ const pbfiedPlugin = ({ types: t }, options) => {
         }
       },
       JSXOpeningElement(path) {
+        const removeAttrs = [...REMOVE_ATTRS];
+        path.node.attributes = [
+          ...path.node.attributes.filter(
+            a => t.isJSXAttribute(a) && !removeAttrs.includes(a.name.name)
+          )
+        ];
+
         if (path.node.name.name === "svg") {
           path.node.attributes = [
             ...path.node.attributes.filter(
@@ -107,13 +114,6 @@ const pbfiedPlugin = ({ types: t }, options) => {
             )
           ];
         }
-
-        const removeAttrs = [...REMOVE_ATTRS];
-        path.node.attributes = [
-          ...path.node.attributes.filter(
-            a => t.isJSXAttribute(a) && !removeAttrs.includes(a.name.name)
-          )
-        ];
 
         if (path.node.name.name === "use") {
           const removeAttrs = [...USE_REMOVE_ATTRS];
