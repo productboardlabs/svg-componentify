@@ -3,8 +3,8 @@ const { parse, transform } = require("@babel/core");
 const REMOVE_ATTRS = ["clipRule", "fillRule"];
 // specific remove
 const PATH_REMOVE_ATTRS = [];
+const USE_REMOVE_ATTRS = [];
 const SVG_REMOVE_ATTRS = ["width", "height"];
-const USE_REMOVE_ATTRS = ["xlinkHref"];
 
 const CLASS_NAME = `pb-icon`;
 
@@ -75,10 +75,15 @@ const pbfiedPlugin = ({ types: t }, options) => {
         }
 
         // apply scoped IDs for url(#...)
-        if (
+        const isFunctionTakingId =
           t.isStringLiteral(path.node.value) &&
-          /\(#[\w-]*\)/.test(path.node.value.value)
-        ) {
+          /\(#[\w-]*\)/.test(path.node.value.value);
+
+        const isXlink =
+          path.node.name.name === "xlinkHref" &&
+          t.isStringLiteral(path.node.value);
+
+        if (isFunctionTakingId || isXlink) {
           path.node.value.value = path.node.value.value.replace(
             "#",
             `#${options.name}_`
