@@ -21,7 +21,7 @@ const FILE_BANNER = `/**
 
 const INDEX_EXTRA_CONTENT = `import React from 'react';
 
-export type IconComponent = React.FC<{ className?: string }>;
+export type IconComponent = React.FC<{ className?: string, style?: React.CSSProperties }>;
 
 `;
 
