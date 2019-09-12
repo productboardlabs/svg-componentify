@@ -15,6 +15,10 @@ const LOG_REWRITE = 2;
 const FILE_BANNER = `/**
  * Copyright (c) ${new Date().getFullYear()}-present, ProductBoard, Inc.
  * All rights reserved.
+ *
+ * ######################################################
+ * # THIS FILE IS AUTO-GENERATED, PLEASE DON'T TOUCH IT #
+ * ######################################################
  */
 
 `;
