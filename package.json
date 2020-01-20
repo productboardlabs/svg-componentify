@@ -10,7 +10,8 @@
     "svg-componentify": "src/index.js"
   },
   "scripts": {
-    "svg-componentify": "node src/index.js"
+    "svg-componentify": "node src/index.js",
+    "test": "echo Please send PR"
   },
   "dependencies": {
     "@babel/core": "^7.2.0",
