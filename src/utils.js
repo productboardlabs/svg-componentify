@@ -13,7 +13,7 @@ const LOG_SAME_LINE = 1;
 const LOG_REWRITE = 2;
 
 const FILE_BANNER = `/**
- * Copyright (c) ${new Date().getFullYear()}-present, ProductBoard, Inc.
+ * Copyright (c) ProductBoard, Inc.
  * All rights reserved.
  *
  * ######################################################

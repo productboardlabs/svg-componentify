@@ -40,7 +40,7 @@ You will get React Component like this:
 
 ```js
 /**
- * Copyright (c) 2018-present, ProductBoard, Inc.
+ * Copyright (c) ProductBoard, Inc.
  * All rights reserved.
  */
 
