@@ -29,6 +29,10 @@ export type IconComponent = React.FC<{ className?: string, style?: React.CSSProp
 
 `;
 
+function generateSuffix(suffix) {
+  return suffix === '' ? '' : `.${suffix}`
+}
+
 function log(message, type = LOG_NEWLINE) {
   let modifier = "";
   switch (type) {
@@ -136,7 +140,7 @@ async function generateComponent(iconName, options) {
   log(`Processing "${iconName}"...`);
 
   const componentName = getComponentNameFromFileName(iconName);
-  const componentPath = `${exportPath}/${componentName}.${suffix}.${extension}`;
+  const componentPath = `${exportPath}/${componentName}${generateSuffix(suffix)}.${extension}`;
   const svgPath = `${iconPath}/${iconName}`;
 
   // check if the import path exists, if not the file has been removed (from git history) so we want to delete it
@@ -213,7 +217,7 @@ function createIndexFile(icons, options) {
   for (icon of icons) {
     name = getComponentNameFromFileName(icon);
 
-    content += `export { default as ${name} } from './${name}.${suffix}';\n`;
+    content += `export { default as ${name} } from './${name}${generateSuffix(suffix)}';\n`;
   }
 
   fs.writeFileSync(`${exportPath}/index.tsx`, content);
@@ -259,13 +263,14 @@ async function getStagedIcons(options) {
 async function getXORIcons(options) {
   const { iconPath, exportPath, suffix, extension } = options;
 
+
   // get icons we have
   const icons = fs
     .readdirSync(iconPath)
     .filter(isSvg)
     .map(iconName => {
       const componentName = getComponentNameFromFileName(iconName);
-      return `${componentName}.${suffix}.${extension}`;
+      return `${componentName}${generateSuffix(suffix)}.${extension}`;
     });
 
   // get generated icons we have

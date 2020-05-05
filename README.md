@@ -44,17 +44,17 @@ You will get React Component like this:
  * All rights reserved.
  */
 
-import React from "react";
-import cx from "classnames";
-import styles from "./Icon.styles";
+import React from 'react'
+import cx from 'classnames'
+import styles from './Icon.styles'
 
 const Feature = ({ className }: { className: string }) => (
-  <svg viewBox="0 0 16 16" className={cx(className, styles.icon, "pb-icon")}>
+  <svg viewBox="0 0 16 16" className={cx(className, styles.icon, 'pb-icon')}>
     <path d="M15 0c.6 0 1 .4 1 1v14c0 .6-.4 1-1 1H1c-.6 0-1-.4-1-1V1c0-.6.4-1 1-1h14zm-1 14V2H2v12h12zM4 7h8v2H4V7zm0-3h8v2H4V4zm0 6h4v2H4v-2z" />
   </svg>
-);
+)
 
-export default Feature;
+export default Feature
 ```
 
 ## Configuration
@@ -65,8 +65,8 @@ Exported binary `svg-componentify` has this possible configuration (via argument
 
 - `--icon-path` (required) Where to look for SVG icons
 - `--export-path` (required) Where to export optimized icon React components
-- `--extension` (defaults to `react`)
-- `--suffix` (defaults to `tsx`)
+- `--extension` (defaults to `tsx`)
+- `--suffix` (defaults to `react`)
 - `--only-staged` (defaults to `false`) Transform only staged svg icons files
 - `--all` (defaults to `false`) Process all files
 - `-v`, `--version` to print actual version of the tool
