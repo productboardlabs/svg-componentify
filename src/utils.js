@@ -3,6 +3,7 @@ const path = require("path");
 const readline = require("readline");
 const { exec } = require("child_process");
 const camelcase = require("lodash.camelcase");
+const kebabcase = require("lodash.kebabcase");
 const snakecase = require("lodash.snakecase");
 const xor = require("lodash.xor");
 const svgr = require("@svgr/core").default;
@@ -101,13 +102,21 @@ async function prompt(question, { answer, correct, fallback }) {
   });
 }
 
-function getComponentNameFromFileName(file) {
+function getComponentNameFromFileName(file, namingConvention) {
   const name = file.split(".")[0];
 
   const camelSized = camelcase(name);
+  const componentName = camelSized.charAt(0).toUpperCase() + camelSized.slice(1) 
 
-  // create ComponentName, first letter should be uppercased
-  return camelSized.charAt(0).toUpperCase() + camelSized.slice(1);
+  if(namingConvention === 'kebabCase') {
+    return { componentName, fileName: kebabcase(name) }
+  }
+
+  if(namingConvention === 'snakeCase') {
+    return { componentName, fileName: snakecase(name) }
+  }
+
+    return { componentName, fileName: componentName }
 }
 
 function getSvgNameFromComponentFileName(file) {
@@ -136,11 +145,11 @@ async function getComponentCode(svgCode, name) {
 }
 
 async function generateComponent(iconName, options) {
-  const { suffix, extension, force, exportPath, iconPath } = options;
+  const { suffix, extension, force, exportPath, iconPath, namingConvention } = options;
   log(`Processing "${iconName}"...`);
 
-  const componentName = getComponentNameFromFileName(iconName);
-  const componentPath = `${exportPath}/${componentName}${generateSuffix(suffix)}.${extension}`;
+  const { componentName, fileName } = getComponentNameFromFileName(iconName, namingConvention);
+  const componentPath = `${exportPath}/${fileName}${generateSuffix(suffix)}.${extension}`;
   const svgPath = `${iconPath}/${iconName}`;
 
   // check if the import path exists, if not the file has been removed (from git history) so we want to delete it
@@ -211,13 +220,13 @@ async function generateComponent(iconName, options) {
 }
 
 function createIndexFile(icons, options) {
-  const { exportPath, suffix } = options;
+  const { exportPath, suffix, namingConvention } = options;
   let content = FILE_BANNER + INDEX_EXTRA_CONTENT;
 
   for (icon of icons) {
-    name = getComponentNameFromFileName(icon);
+    const { componentName, fileName } = getComponentNameFromFileName(icon, namingConvention);
 
-    content += `export { default as ${name}Icon } from './${name}${generateSuffix(suffix)}';\n`;
+    content += `export { default as ${componentName}Icon } from './${fileName}${generateSuffix(suffix)}';\n`;
   }
 
   fs.writeFileSync(`${exportPath}/index.tsx`, content);
@@ -269,8 +278,8 @@ async function getXORIcons(options) {
     .readdirSync(iconPath)
     .filter(isSvg)
     .map(iconName => {
-      const componentName = getComponentNameFromFileName(iconName);
-      return `${componentName}${generateSuffix(suffix)}.${extension}`;
+      const { fileName } = getComponentNameFromFileName(iconName);
+      return `${fileName}${generateSuffix(suffix)}.${extension}`;
     });
 
   // get generated icons we have

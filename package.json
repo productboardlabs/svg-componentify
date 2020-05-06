@@ -22,6 +22,7 @@
     "@svgr/plugin-prettier": "^4.0.3",
     "@svgr/plugin-svgo": "^4.0.3",
     "lodash.camelcase": "^4.3.0",
+    "lodash.kebabcase": "^4.1.1",
     "lodash.snakecase": "^4.1.1",
     "lodash.xor": "^4.5.0",
     "minimist": "^1.2.0"

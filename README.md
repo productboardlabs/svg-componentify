@@ -67,6 +67,7 @@ Exported binary `svg-componentify` has this possible configuration (via argument
 - `--export-path` (required) Where to export optimized icon React components
 - `--extension` (defaults to `tsx`)
 - `--suffix` (defaults to `react`)
+- `--naming-convention` (defaults to `camelCase`) Exported components file name convention. Options: `camelCase` | `kebabCase` | `snakeCase`
 - `--only-staged` (defaults to `false`) Transform only staged svg icons files
 - `--all` (defaults to `false`) Process all files
 - `-v`, `--version` to print actual version of the tool

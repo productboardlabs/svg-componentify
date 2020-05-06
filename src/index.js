@@ -19,6 +19,7 @@ const DEFAULT_ICON_PATH = null;
 const DEFAULT_EXPORT_PATH = null;
 const DEFAULT_SUFFIX = "react";
 const DEFAULT_EXTENSION = "tsx";
+const DEFAULT_NAMING_CONVENTION = 'camelCase'
 
 async function generateIcons(options) {
   const { onlyStaged, all } = options;
@@ -49,7 +50,7 @@ async function generateIcons(options) {
 }
 
 const argv = minimist(process.argv.slice(2), {
-  string: ["icon-path", "export-path", "extension", "suffix"],
+  string: ["icon-path", "export-path", "extension", "suffix", "naming-convention"],
   boolean: ["version", "only-staged", "force"],
   alias: { v: "version", f: "force" },
   default: {
@@ -57,7 +58,8 @@ const argv = minimist(process.argv.slice(2), {
     "icon-path": DEFAULT_ICON_PATH,
     "export-path": DEFAULT_EXPORT_PATH,
     extension: DEFAULT_EXTENSION,
-    suffix: DEFAULT_SUFFIX
+    suffix: DEFAULT_SUFFIX,
+    "naming-convention": DEFAULT_NAMING_CONVENTION
   }
 });
 
@@ -77,5 +79,6 @@ generateIcons({
   exportPath: normalizePath(argv["export-path"]),
   extension: argv["extension"],
   suffix: argv["suffix"],
-  force: argv["force"]
+  force: argv["force"],
+  namingConvention: argv["naming-convention"]
 });
