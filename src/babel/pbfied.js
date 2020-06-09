@@ -1,6 +1,3 @@
-const { parse, transform } = require("@babel/core");
-
-const REMOVE_ATTRS = ["clipRule", "fillRule"];
 // specific remove
 const PATH_REMOVE_ATTRS = [];
 const USE_REMOVE_ATTRS = [];
@@ -70,10 +67,9 @@ const pbfiedPlugin = ({ types: t }, options) => {
         }
       },
       JSXOpeningElement(path) {
-        const removeAttrs = [...REMOVE_ATTRS];
         path.node.attributes = [
           ...path.node.attributes.filter(
-            a => t.isJSXAttribute(a) && !removeAttrs.includes(a.name.name)
+            a => t.isJSXAttribute(a)
           )
         ];
 
